@@ -173,6 +173,7 @@ def main():
                     beam = None
                     del bombs[i]
                     bird.change_img(6,screen)
+                    break
 
         pg.display.update()
         clock.tick(1000)
