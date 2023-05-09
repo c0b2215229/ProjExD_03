@@ -8,6 +8,7 @@ import pygame as pg
 WIDTH = 1600  # ゲームウィンドウの幅
 HEIGHT = 900  # ゲームウィンドウの高さ
 NUM_OF_BOMBS = 5
+NUM_OF_BEAMS = 3
 
 
 def check_bound(area: pg.Rect, obj: pg.Rect) -> tuple[bool, bool]:
@@ -88,7 +89,17 @@ class Bird:
         if not (sum_mv[0] == 0 and sum_mv[1] == 0):
             self._img = self._imgs[tuple(sum_mv)] #押されたキーの合計値
         screen.blit(self._img, self._rct)
-
+    def get_direction(self):
+        self._dir = {
+            (+1, 0), #右
+            (+1, -1), #右上
+            (0, -1), #上
+            (-1, -1), #左上
+            (-1, 0), #左
+            (-1, +1), #左下
+            (0, +1), #下
+            (+1, +1) #右下
+        }
 
 class Bomb:
     """
@@ -135,6 +146,7 @@ class Beam:
         self._rct.centerx = bird._rct.centerx + bird._rct.width/2 #こうかとんの中心座標＋ちょっと右
         self._rct.centery = bird._rct.centery  
         self._vx, self._vy = +1, 0
+        self._dir = Bird.get_direction()
 
     def update(self, screen: pg.Surface):
         """
@@ -158,7 +170,7 @@ def main():
     tmr = 0
     while True:
         for event in pg.event.get():
-            if event.type == pg.QUIT:
+            if event.typgie == pg.QUIT:
                 return
             if event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
                 beam = Beam(bird)
