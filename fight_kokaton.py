@@ -146,7 +146,6 @@ class Beam:
         self._rct.centerx = bird._rct.centerx + bird._rct.width/2 #こうかとんの中心座標＋ちょっと右
         self._rct.centery = bird._rct.centery  
         self._vx, self._vy = +1, 0
-        self._dir = Bird.get_direction()
 
     def update(self, screen: pg.Surface):
         """
@@ -157,6 +156,22 @@ class Beam:
         screen.blit(self._img, self._rct)
 
 
+class Explosion:
+    """
+    爆発エフェクトに関するクラス
+    """
+    def __init__(self, bomb: Bomb):
+        img = pg.image.load("ex03/fig/explotion.gif")
+        self._imgs = [img, pg.transform.flip(img, True, True)]
+        self._rct = bomb._rct.center
+        self._life = time.sleep(2)
+
+    def update(self, screen: pg.Surface):
+        for i in self._imgs:
+            screen.blit(self._imgs[i])
+
+
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -165,6 +180,7 @@ def main():
 
     bird = Bird(3, (900, 400))
     bombs = [Bomb() for _ in range(NUM_OF_BOMBS)]
+    explosion = [Explotion(bomb)]
     beam = None
 
     tmr = 0
