@@ -8,6 +8,7 @@ import pygame as pg
 WIDTH = 1600  # ゲームウィンドウの幅
 HEIGHT = 900  # ゲームウィンドウの高さ
 NUM_OF_BOMBS = 5
+NUM_OF_BEAMS = 3
 
 
 def check_bound(area: pg.Rect, obj: pg.Rect) -> tuple[bool, bool]:
@@ -66,7 +67,7 @@ class Bird:
         引数1 num：こうかとん画像ファイル名の番号
         引数2 screen：画面Surface
         """
-        self._img = pg.transform.rotozoom(pg.image.load(f"ex03/fig/{num}.png"), 0, 2.0)
+        self._img = pg.transform.rotozoom(pg.image.load(f"ex02/fig/{num}.png"), 0, 2.0)
         screen.blit(self._img, self._rct)
 
     def update(self, key_lst: list[bool], screen: pg.Surface):
@@ -88,7 +89,17 @@ class Bird:
         if not (sum_mv[0] == 0 and sum_mv[1] == 0):
             self._img = self._imgs[tuple(sum_mv)] #押されたキーの合計値
         screen.blit(self._img, self._rct)
-   
+    def get_direction(self):
+        self._dir = {
+            (+1, 0), #右
+            (+1, -1), #右上
+            (0, -1), #上
+            (-1, -1), #左上
+            (-1, 0), #左
+            (-1, +1), #左下
+            (0, +1), #下
+            (+1, +1) #右下
+        }
 
 class Bomb:
     """
@@ -135,7 +146,6 @@ class Beam:
         self._rct.centerx = bird._rct.centerx + bird._rct.width/2 #こうかとんの中心座標＋ちょっと右
         self._rct.centery = bird._rct.centery  
         self._vx, self._vy = +1, 0
-           
 
     def update(self, screen: pg.Surface):
         """
@@ -146,11 +156,13 @@ class Beam:
         screen.blit(self._img, self._rct)
 
 
+
+
 def main():
     pg.display.set_caption("たたかえ！こうかとん")
     screen = pg.display.set_mode((WIDTH, HEIGHT))
     clock = pg.time.Clock()
-    bg_img = pg.image.load("ex03/fig/pg_bg.jpg")
+    bg_img = pg.image.load("ex02/fig/pg_bg.jpg")
 
     bird = Bird(3, (900, 400))
     bombs = [Bomb() for _ in range(NUM_OF_BOMBS)]
@@ -194,7 +206,9 @@ def main():
                     del bombs[i]
                     bird.change_img(6,screen)
                     break
-
+        if not bombs:
+            time.sleep(1)
+            return
         pg.display.update()
         clock.tick(1000)
 
